@@ -8,7 +8,7 @@
 #include <thread>
 
 #define NUM_OF_THREADS 8
-#define VECTOR_SIZE    5000000
+#define VECTOR_SIZE    50000000
 
 using time_point = std::chrono::high_resolution_clock::time_point;
 
@@ -52,8 +52,8 @@ int main(int argc, char *argv[])
     time_point t1_seq = std::chrono::high_resolution_clock::now();
     std::vector<int> sequential_result = first_vec + second_vec;
     time_point t2_seq = std::chrono::high_resolution_clock::now();
-    auto duration_seq = std::chrono::duration_cast<std::chrono::microseconds>(t2_seq - t1_seq).count();
-    std::cout << "Sequential addition of vectors - execution time: " << duration_seq << "us" << std::endl;
+    auto duration_seq = std::chrono::duration<double>(t2_seq - t1_seq).count();
+    std::cout << "Sequential addition of vectors - execution time: " << duration_seq << " seconds" << std::endl;
 
     /* Parallel addition of vectors */
     std::vector<std::thread> threads;
@@ -61,15 +61,6 @@ int main(int argc, char *argv[])
 
     time_point t1_par = std::chrono::high_resolution_clock::now();
 
-    // for (int i = 0; i < NUM_OF_THREADS; i++)
-    // {
-    //     threads.push_back(std::thread(parallel_addition<int>,
-    //                                   std::ref(parallel_result),
-    //                                   first_vec,
-    //                                   second_vec,
-    //                                   i * (VECTOR_SIZE / NUM_OF_THREADS),
-    //                                   (i + 1) * (VECTOR_SIZE / NUM_OF_THREADS)));
-    // }
     auto range = std::size(first_vec) / NUM_OF_THREADS;
     for (int i = 0; i < NUM_OF_THREADS; i++)
     {
@@ -94,8 +85,8 @@ int main(int argc, char *argv[])
     }
 
     time_point t2_par = std::chrono::high_resolution_clock::now();
-    auto duration_par = std::chrono::duration_cast<std::chrono::microseconds>(t2_par - t1_par).count();
-    std::cout << "Parallel (" << NUM_OF_THREADS << " threads) addition of vectors - execution time: " << duration_par << "us" << std::endl;
+    auto duration_par = std::chrono::duration<double>(t2_par - t1_par).count();
+    std::cout << "Parallel (" << NUM_OF_THREADS << " threads) addition of vectors - execution time: " << duration_par << " seconds" << std::endl;
 
     return 0;
 }
