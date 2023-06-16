@@ -3,7 +3,8 @@ using std::cout;
 using std::endl;
 
 __global__ void incrementVariable(int* result) {
-    atomicAdd(result, 1);
+    result += 1;
+    // atomicAdd(result, 1);
 }
 
 int main() {
