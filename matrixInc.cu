@@ -62,11 +62,7 @@ int main()
 
     /* Cleanup device and host memory */
     cudaFree(d_a);
-    cudaFree(d_b);
-    cudaFree(d_c);
     delete a;
-    delete b;
-    delete c;
 
     return 0;
 }
