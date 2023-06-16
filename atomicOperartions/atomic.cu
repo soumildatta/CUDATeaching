@@ -17,6 +17,7 @@ int main() {
     // Launch the kernel
     int numThreads = 256;
     incrementVariable<<<1, numThreads>>>(deviceResult);
+    cudaDeviceSynchronize();
 
     // Copy the result back to the host
     cudaMemcpy(&hostResult, deviceResult, sizeof(int), cudaMemcpyDeviceToHost);
