@@ -20,7 +20,11 @@ int main()
     cudaMalloc((void **)&d_array, size);
     cudaMemcpy(d_array, h_array, size, cudaMemcpyHostToDevice);
 
-    float result = 0.0f;
+    float *result = (float *)malloc(sizeof(float));
+    result[0] = 0;
+    
+    float *d_result = NULL;
+    cudaMalloc((void **)&result, sizeof(float));
     cudaMemcpy(result, sizeof(float), cudaMemcpyHostToDevice);
 
     return 0;
