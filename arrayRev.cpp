@@ -5,7 +5,7 @@ while(index < size / 2)
 {
     float temp = array[index];
     array[index] = array[end];
-    array[end] = array[index];
+    array[end] = temp;
 
     index++;
     end--;
