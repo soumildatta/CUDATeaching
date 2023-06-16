@@ -22,10 +22,10 @@ int main()
 
     float *result = (float *)malloc(sizeof(float));
     result[0] = 0;
-    
+
     float *d_result = NULL;
-    cudaMalloc((void **)&result, sizeof(float));
-    cudaMemcpy(result, sizeof(float), cudaMemcpyHostToDevice);
+    cudaMalloc((void **)&d_result, sizeof(float));
+    cudaMemcpy(d_result, result, sizeof(float), cudaMemcpyHostToDevice);
 
     return 0;
 }
