@@ -1,55 +1,54 @@
 #include <iostream>
-#include <cuda_runtime.h>
+using std::cout; using std::endl;
 
-// Kernel function to reverse an array on the GPU
-__global__ void reverseArray(float* array, int size) {
+__global__ void reverseArray(float *array, int size)
+{
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     int reverseIndex = size - index - 1;
 
-    if (index < size / 2) {
+    // TODO: fill this out
+    if(index < size / 2)
+    {
         float temp = array[index];
         array[index] = array[reverseIndex];
         array[reverseIndex] = temp;
     }
 }
 
-int main() {
-    // Size of the array
-    int arraySize = 10;
+int main()
+{
+    int arraySize = 10000000000000000;
 
-    // Allocate memory for the array on the host
-    float* hostArray = new float[arraySize];
+    //! Allocate host memory for the array 
+    float *h_array = new float[arraySize];
 
-    // Initialize the array
-    for (int i = 0; i < arraySize; ++i) {
-        hostArray[i] = static_cast<float>(i);
+    //! Initialize the array
+    for (int i = 0; i < arraySize; ++i)
+    {
+        h_array[i] = static_cast<float>(i);
     }
 
-    // Allocate memory for the array on the device
-    float* deviceArray;
-    cudaMalloc((void**)&deviceArray, arraySize * sizeof(float));
+    //! Device mem allocation
+    float *d_array;
+    cudaMalloc((void **)&d_array, arraySize * sizeof(float));
+    cudaMemcpy(d_array, h_array, arraySize * sizeof(float), cudaMemcpyHostToDevice);
 
-    // Copy the array from host to device
-    cudaMemcpy(deviceArray, hostArray, arraySize * sizeof(float), cudaMemcpyHostToDevice);
-
-    // Launch the kernel
+    //! block size and grid size
     int blockSize = 256;
-    int gridSize = (arraySize + blockSize - 1) / blockSize;
-    reverseArray<<<gridSize, blockSize>>>(deviceArray, arraySize);
+    int numBlocks = (arraySize + blockSize - 1) / blockSize;
+    reverseArray<<<numBlocks, blockSize>>>(d_array, arraySize);
+    cudaDeviceSynchronize();
 
-    // Copy the reversed array back to the host
-    cudaMemcpy(hostArray, deviceArray, arraySize * sizeof(float), cudaMemcpyDeviceToHost);
+    cudaMemcpy(h_array, d_array, arraySize * sizeof(float), cudaMemcpyDeviceToHost);
 
-    // Cleanup
-    delete[] hostArray;
-    cudaFree(deviceArray);
-
-    // Print the reversed array
-    std::cout << "Reversed array: ";
-    for (int i = 0; i < arraySize; ++i) {
-        std::cout << hostArray[i] << " ";
+    for(int i = 0; i < arraySize; ++i)
+    {
+        cout << h_array[i] << " ";
     }
-    std::cout << std::endl;
+
+    // cleanup
+    delete[] h_array;
+    cudaFree(d_array);
 
     return 0;
 }
